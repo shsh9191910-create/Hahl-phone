@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل الحسابات والديون</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+
+        :root {
+            --primary-gold: #e09d3b;
+            --secondary-gold: #f4c472;
+            --bg-color: #fcf8f2;
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+            --text-number: #27ae60;
+            --border-color: #e29d3b;
+            --shadow: 0 4px 15px rgba(224, 157, 59, 0.15);
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* العنوان العلوي للصفحة */
+        .page-header-text {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--text-main);
+            margin-top: 20px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: #636e72;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* إطار التطبيق */
+        .app-container {
+            width: 100%;
+            max-width: 520px;
+            background: #ffffff;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid #fcecd3;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        /* الشريط العلوي للتطبيق */
+        .app-bar {
+            background-color: var(--primary-gold);
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-bar-title {
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .app-bar-icon {
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        /* المحتوى الداخلي */
+        .content-area {
+            padding: 20px;
+            flex: 1;
+        }
+
+        /* شريط الإدخال السريع */
+        .quick-entry-card {
+            background-color: #fdf6eb;
+            border: 2px solid var(--primary-gold);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .quick-entry-card h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: var(--primary-gold);
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 1px solid #fcecd3;
+            padding-bottom: 8px;
+        }
+
+        .quick-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2d3436;
+        }
+
+        .form-group input, .form-group select {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-family: inherit;
+            font-size: 13px;
+            background: #fff;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary-gold);
+        }
+
+        .btn-save-quick {
+            background-color: var(--primary-gold);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            font-family: inherit;
+            transition: opacity 0.2s;
+        }
+
+        .btn-save-quick:hover { opacity: 0.9; }
+
+        /* شبكة الأقسام */
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .menu-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 18px;
+            padding: 15px 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text-main);
+            min-height: 80px;
+        }
+
+        .menu-icon-container {
+            width: 35px;
+            height: 35px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .menu-icon-container i {
+            font-size: 28px;
+            color: var(--primary-gold);
+        }
+
+        .menu-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .menu-number {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-number);
+        }
+
+        /* شريط التنقل السفلي */
+        .bottom-nav {
+            background-color: #ffffff;
+            border-top: 1px solid #eee;
+            padding: 15px 10px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: relative;
+            margin-top: auto;
+        }
+
+        .nav-item {
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: #636e72;
+            font-size: 11px;
+            width: 65px;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+            margin-bottom: 6px;
+            display: block;
+            color: #2d3436;
+        }
+
+        /* الزر الدائري العائم */
+        .floating-add-btn {
+            width: 55px;
+            height: 55px;
+            background-color: var(--primary-gold);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            box-shadow: 0 4px 10px rgba(224, 157, 59, 0.4);
+            cursor: pointer;
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid #ffffff;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="page-header-text">لوحة التحكم الأساسية</div>
+    <div class="page-subtitle">إدارة الحسابات والمعاملات بدقة</div>
+
+    <div class="app-container">
+        
+        <div class="app-bar">
+            <div class="app-bar-icon"><i class="fa-solid fa-house"></i></div>
+            <div class="app-bar-title">
+                <i class="fa-solid fa-book"></i>
+                <span>الرئيسية</span>
+            </div>
+            <div class="app-bar-icon"><i class="fa-solid fa-bars"></i></div>
+        </div>
+
+        <div class="content-area">
+            
+            <div class="quick-entry-card">
+                <h3><i class="fa-solid fa-bolt"></i> إدخال سريع للمعلومات</h3>
+                <div class="quick-form">
+                    <div class="form-group">
+                        <label>نوع المادة:</label>
+                        <select id="qType">
+                            <option value="دائن">دائن</option>
+                            <option value="مدين">مدين</option>
+                            <option value="شاشات">شاشات</option>
+                            <option value="تطابق شاشات">تطابق شاشات</option>
+                            <option value="طلبات">طلبات</option>
+                            <option value="ابل ايدي">ابل ايدي</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>اسم الزبون:</label>
+                        <input type="text" id="qName" placeholder="اسم الزبون">
+                    </div>
+                    <div class="form-group">
+                        <label>العدد:</label>
+                        <input type="number" id="qQuantity" placeholder="العدد">
+                    </div>
+                    <div class="form-group">
+                        <label>السعر:</label>
+                        <input type="number" id="qPrice" placeholder="السعر">
+                    </div>
+                </div>
+                <button class="btn-save-quick" onclick="saveQuickEntry()">حفظ وإضافة</button>
+            </div>
+
+            <div class="grid-menu">
+                <div class="menu-card">
+                    <div class="menu-icon-container"><i class="fa-solid fa-arrow-right-to-bracket" style="color: #27ae60;"></i></div>
+                    <div class="menu-title">دائن</div>
+                    <div class="menu-number" id="total-دائن">٠ د.ع</div>
+                </div>
+
+                <div class="menu-card">
+                    <div class="menu-icon-container"><i class="fa-solid fa-arrow-up-from-bracket" style="color: #d63031;"></i></div>
+                    <div class="menu-title">مدين</div>
+                    <div class="menu-number" id="total-مدين">٠ د.ع</div>
+                </div>
+
+                <div class="menu-card">
+                    <div class="menu-icon-container"><i class="fa-solid fa-tv" style="color: #0984e3;"></i></div>
+                    <div class="menu-title">شاشات</div>
+                    <div class="menu-number" id="total-شاشات">٠ د.ع</div>
+                </div>
+
+                <div class="menu-card">
+                    <div class="menu-icon-container"><i class="fa-solid fa-code-compare" style="color: #e1b12c;"></i></div>
+                    <div class="menu-title">تطابق شاشات</div>
+                    <div class="menu-number" id="total-تطابق شاشات">٠ د.ع</div>
+                </div>
+
+                <div class="menu-card">
+                    <div class="menu-icon-container"><i class="fa-solid fa-clipboard-list" style="color: #e84393;"></i></div>
+                    <div class="menu-title">طلبات</div>
+                    <div class="menu-number" id="total-طلبات">٠ د.ع</div>
+                </div>
+
+                <div class="menu-card">
+                    <div class="menu-icon-container"><i class="fa-brands fa-apple" style="color: #00cec9;"></i></div>
+                    <div class="menu-title">ابل ايدي</div>
+                    <div class="menu-number" id="total-ابل ايدي">٠ د.ع</div>
+                </div>
+
+                <div class="menu-card" style="grid-column: span 2; background: #fff9e6;">
+                    <div class="menu-icon-container"><i class="fa-solid fa-wallet" style="color: #e09d3b;"></i></div>
+                    <div class="menu-title">وارد كلي لهذا شهر</div>
+                    <div class="menu-number" id="total-وارد كلي لهذا شهر" style="color: #e09d3b;">٠ د.ع</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="bottom-nav">
+            <div class="floating-add-btn">+</div>
+
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-house"></i>
+                الرئيسية
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                بحث
+            </a>
+            <a href="#" class="nav-item" style="visibility: hidden;"></a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-bell"></i>
+                التنبيهات
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-sliders"></i>
+                الإعدادات
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        // كائن لتخزين الإجماليات لكل قسم
+        const totals = {
+            "دائن": 0,
+            "مدين": 0,
+            "شاشات": 0,
+            "تطابق شاشات": 0,
+            "طلبات": 0,
+            "ابل ايدي": 0,
+            "وارد كلي لهذا شهر": 0
+        };
+
+        function saveQuickEntry() {
+            let type = document.getElementById('qType').value;
+            let qty = parseFloat(document.getElementById('qQuantity').value) || 0;
+            let price = parseFloat(document.getElementById('qPrice').value) || 0;
+
+            if (qty <= 0 || price <= 0) {
+                alert("يرجى إدخال عدد وسعر صحيح أكبر من صفر.");
+                return;
+            }
+
+            let itemTotal = qty * price;
+
+            // تحديث إجمالي الخانة المحددة
+            totals[type] += itemTotal;
+            document.getElementById(`total-${type}`).innerText = totals[type].toLocaleString() + ' د.ع';
+
+            // تحديث خانة "وارد كلي لهذا شهر" تلقائياً
+            totals["وارد كلي لهذا شهر"] += itemTotal;
+            document.getElementById(`total-وارد كلي لهذا شهر`).innerText = totals["وارد كلي لهذا شهر"].toLocaleString() + ' د.ع';
+
+            // تفريغ الحقول بعد الحفظ
+            document.getElementById('qName').value = '';
+            document.getElementById('qQuantity').value = '';
+            document.getElementById('qPrice').value = '';
+        }
+    </script>
+
+</body>
+</html>
