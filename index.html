@@ -1,103 +1,98 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="html-root">
 <head>
     <meta charset="UTF-8">
-    <title>هفال فون - Haval Phone</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>هفال فون ✨</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
-        :root { --bg: #000; --card: #161616; --gold: #ffb703; --green: #2ecc71; --border: #333; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: #fff; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 450px; }
+        :root { --bg: #000; --card: #1a1a1a; --gold: #ffd700; --border: #333; }
+        body { font-family: sans-serif; background: var(--bg); color: #fff; padding: 15px; margin: 0; min-height: 100vh; }
+        .app-container { max-width: 400px; margin: auto; }
         
-        /* تصميم الشريط العلوي */
-        .header { text-align: center; font-size: 24px; font-weight: bold; color: var(--gold); margin-bottom: 20px; }
-        .input-box { background: var(--card); padding: 20px; border-radius: 25px; border: 1px solid var(--border); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        input, select { width: 100%; padding: 14px; margin: 6px 0; border-radius: 12px; border: 1px solid #444; background: #222; color: #fff; box-sizing: border-box; }
-        .btn-add { background: var(--green); width: 100%; padding: 14px; border: none; border-radius: 12px; color: #fff; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; transition: 0.3s; }
-        .btn-add:hover { background: #27ae60; }
+        /* شريط اللغة */
+        .lang-bar { display: flex; justify-content: flex-start; gap: 10px; margin-bottom: 20px; }
+        .lang-btn { background: #333; padding: 5px 15px; border-radius: 8px; cursor: pointer; font-size: 12px; }
 
-        /* تصميم الأيقونات */
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
-        .menu-btn { background: var(--card); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; }
-        .menu-btn:hover { border-color: var(--gold); transform: translateY(-5px); }
-        .menu-btn i { font-size: 28px; color: var(--gold); margin-bottom: 10px; }
-        .menu-btn div { font-weight: bold; }
-
-        /* النافذة المنبثقة */
-        #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); padding: 20px; z-index: 100; }
-        .modal-content { max-width: 450px; margin: auto; background: var(--card); padding: 20px; border-radius: 20px; max-height: 80vh; overflow-y: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 10px; border-bottom: 1px solid #333; text-align: center; }
+        /* الأيقونات */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .menu-item { background: var(--card); padding: 30px 10px; border-radius: 20px; text-align: center; border: 1px solid var(--border); cursor: pointer; font-weight: bold; }
+        
+        #section-page { display: none; }
+        .card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; justify-content: space-between; }
+        input { width: 100%; background: #000; border: 1px solid var(--border); padding: 15px; border-radius: 15px; color: #fff; margin-bottom: 10px; box-sizing: border-box; }
+        .btn-action { background: #2ecc71; width: 100%; padding: 15px; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <div class="header">✨ هفال فون ✨</div>
-        
-        <div class="input-box">
-            <input type="text" id="customer" placeholder="اسم الزبون...">
-            <input type="text" id="item" placeholder="اسم المادة...">
-            <select id="type">
-                <option value="دائن">دائن</option>
-                <option value="مدين">مدين</option>
-                <option value="شاشات">شاشات</option>
-                <option value="تطابق">تطابق</option>
-            </select>
-            <input type="number" id="amount" placeholder="المبلغ (د.ع)...">
-            <button class="btn-add" onclick="addTransaction()">إضافة المعاملة</button>
-        </div>
+<div class="app-container">
+    <div class="lang-bar">
+        <div class="lang-btn" onclick="setLang('ar')">العربية</div>
+        <div class="lang-btn" onclick="setLang('ku')">Kurdî</div>
+    </div>
 
-        <div class="menu-grid">
-            <div class="menu-btn" onclick="showDetails('دائن')"><i class="fa-solid fa-users"></i><div>سجل الدائن</div></div>
-            <div class="menu-btn" onclick="showDetails('مدين')"><i class="fa-solid fa-file-invoice"></i><div>سجل المدين</div></div>
-            <div class="menu-btn" onclick="showDetails('شاشات')"><i class="fa-solid fa-tv"></i><div>شاشات</div></div>
-            <div class="menu-btn" onclick="showDetails('تطابق')"><i class="fa-solid fa-code-compare"></i><div>تطابق</div></div>
+    <div id="main-menu">
+        <h2 id="title-main" style="text-align: center; color: var(--gold);">✨ هفال فون ✨</h2>
+        <div class="grid">
+            <div class="menu-item" onclick="openPage('مدين')">🏢 <span class="txt-debt">مدين</span></div>
+            <div class="menu-item" onclick="openPage('دائن')">👥 <span class="txt-cred">دائن</span></div>
+            <div class="menu-item" onclick="openPage('شاشات')">📺 <span class="txt-screens">شاشات</span></div>
+            <div class="menu-item" onclick="openPage('طلبات')">🛒 <span class="txt-orders">طلبات</span></div>
+            <div class="menu-item" onclick="openPage('ابل ايدي')" style="grid-column: span 2;">🍎 Apple ID</div>
         </div>
     </div>
 
-    <div id="modal">
-        <div class="modal-content">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h2 id="modal-title" style="color:var(--gold)"></h2>
-                <button onclick="document.getElementById('modal').style.display='none'" style="background:transparent; border:none; color:white; font-size:20px; cursor:pointer;">✕</button>
-            </div>
-            <div id="modal-list"></div>
-        </div>
+    <div id="section-page">
+        <button onclick="goBack()" style="background:none; border:none; color:white; font-size:18px;">⬅ <span class="txt-back">رجوع</span></button>
+        <h2 id="section-title" style="color:var(--gold); text-align:center;"></h2>
+        <div id="fields"></div>
+        <button class="btn-action" onclick="saveData()">+</button>
+        <div id="record-list"></div>
     </div>
+</div>
 
-    <script>
-        function addTransaction() {
-            let data = {
-                customer: document.getElementById('customer').value,
-                item: document.getElementById('item').value,
-                amount: document.getElementById('amount').value,
-                type: document.getElementById('type').value
-            };
-            if (!data.customer || !data.amount) return alert("يرجى ملء الحقول المطلوبة");
-            
-            let list = JSON.parse(localStorage.getItem(data.type)) || [];
-            list.push(data);
-            localStorage.setItem(data.type, JSON.stringify(list));
-            
-            alert("تمت الإضافة بنجاح!");
-            document.getElementById('customer').value = '';
-            document.getElementById('item').value = '';
-            document.getElementById('amount').value = '';
-        }
+<script>
+    const translations = {
+        'ar': { debt: 'مدين', cred: 'دائن', screens: 'شاشات', orders: 'طلبات', back: 'رجوع' },
+        'ku': { debt: 'قەرزدار', cred: 'قەرزپێدەر', screens: 'شاشە', orders: 'داواکاری', back: 'گەڕانەوە' }
+    };
 
-        function showDetails(type) {
-            let list = JSON.parse(localStorage.getItem(type)) || [];
-            let html = "<table><tr><th>الزبون</th><th>المادة</th><th>المبلغ</th></tr>";
-            list.forEach(i => {
-                html += `<tr><td>${i.customer}</td><td>${i.item}</td><td>${i.amount}</td></tr>`;
-            });
-            html += "</table>";
-            document.getElementById('modal-title').innerText = "سجل " + type;
-            document.getElementById('modal-list').innerHTML = html;
-            document.getElementById('modal').style.display = 'block';
-        }
-    </script>
+    function setLang(lang) {
+        document.getElementById('html-root').setAttribute('dir', lang === 'ku' ? 'rtl' : 'rtl');
+        document.querySelectorAll('.txt-debt').forEach(e => e.innerText = translations[lang].debt);
+        document.querySelectorAll('.txt-cred').forEach(e => e.innerText = translations[lang].cred);
+        document.querySelectorAll('.txt-screens').forEach(e => e.innerText = translations[lang].screens);
+        document.querySelectorAll('.txt-orders').forEach(e => e.innerText = translations[lang].orders);
+        document.querySelectorAll('.txt-back').forEach(e => e.innerText = translations[lang].back);
+    }
+
+    // المنطق السابق مع تحديث بسيط
+    let activeType = "";
+    function openPage(type) {
+        activeType = type;
+        document.getElementById('main-menu').style.display = 'none';
+        document.getElementById('section-page').style.display = 'block';
+        document.getElementById('section-title').innerText = type;
+        document.getElementById('fields').innerHTML = `<input type="text" id="i1" placeholder="بيانات...">`;
+    }
+    
+    function goBack() {
+        document.getElementById('main-menu').style.display = 'block';
+        document.getElementById('section-page').style.display = 'none';
+    }
+
+    function saveData() {
+        let val = document.getElementById('i1').value;
+        let data = JSON.parse(localStorage.getItem(activeType) || "[]");
+        data.push(val);
+        localStorage.setItem(activeType, JSON.stringify(data));
+        renderRecords();
+    }
+
+    function renderRecords() {
+        let data = JSON.parse(localStorage.getItem(activeType) || "[]");
+        document.getElementById('record-list').innerHTML = data.map(d => `<div class="card">${d}</div>`).join('');
+    }
+</script>
 </body>
 </html>
