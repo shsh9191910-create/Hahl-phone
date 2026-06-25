@@ -1,98 +1,166 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" id="html-root">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>هفال فون ✨</title>
+    <title>هفال فون - نظام متكامل</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        :root { --bg: #000; --card: #1a1a1a; --gold: #ffd700; --border: #333; }
-        body { font-family: sans-serif; background: var(--bg); color: #fff; padding: 15px; margin: 0; min-height: 100vh; }
-        .app-container { max-width: 400px; margin: auto; }
-        
-        /* شريط اللغة */
-        .lang-bar { display: flex; justify-content: flex-start; gap: 10px; margin-bottom: 20px; }
-        .lang-btn { background: #333; padding: 5px 15px; border-radius: 8px; cursor: pointer; font-size: 12px; }
-
-        /* الأيقونات */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .menu-item { background: var(--card); padding: 30px 10px; border-radius: 20px; text-align: center; border: 1px solid var(--border); cursor: pointer; font-weight: bold; }
-        
-        #section-page { display: none; }
-        .card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; justify-content: space-between; }
-        input { width: 100%; background: #000; border: 1px solid var(--border); padding: 15px; border-radius: 15px; color: #fff; margin-bottom: 10px; box-sizing: border-box; }
-        .btn-action { background: #2ecc71; width: 100%; padding: 15px; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; }
+        :root { --bg: #f4f4f4; --card: #ffffff; --text: #000; --accent: #2ecc71; }
+        [data-theme="dark"] { --bg: #121212; --card: #1e1e1e; --text: #fff; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 10px; transition: 0.3s; }
+        .container { max-width: 400px; margin: auto; }
+        .hidden { display: none; }
+        .btn { padding: 8px; border-radius: 6px; border: none; cursor: pointer; margin: 2px; font-weight: bold; color: white; }
+        .btn-add { background: var(--accent); width: 100%; padding: 10px; }
+        .card { background: var(--card); padding: 10px; border-radius: 10px; margin-bottom: 8px; border: 1px solid #ccc; font-size: 14px; }
+        input { width: 100%; padding: 8px; margin-bottom: 5px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
+        #apple-card { background: white; color: black; padding: 15px; border-radius: 10px; border: 2px solid #007bff; display: none; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="lang-bar">
-        <div class="lang-btn" onclick="setLang('ar')">العربية</div>
-        <div class="lang-btn" onclick="setLang('ku')">Kurdî</div>
+<div class="container">
+    <button class="btn" style="background:#555" onclick="toggleTheme()">☀️/🌙</button>
+    <button class="btn" style="background:#333" onclick="setLang('ar')">العربية</button>
+    <button class="btn" style="background:#333" onclick="setLang('ku')">Kurdî</button>
+    
+    <div id="login-screen">
+        <h2 id="l-title">دخول هفال فون</h2>
+        <input type="text" id="userInput" placeholder="اسم المستخدم">
+        <input type="password" id="passInput" placeholder="كلمة المرور">
+        <button class="btn btn-add" onclick="checkLogin()">دخول</button>
     </div>
 
-    <div id="main-menu">
-        <h2 id="title-main" style="text-align: center; color: var(--gold);">✨ هفال فون ✨</h2>
-        <div class="grid">
-            <div class="menu-item" onclick="openPage('مدين')">🏢 <span class="txt-debt">مدين</span></div>
-            <div class="menu-item" onclick="openPage('دائن')">👥 <span class="txt-cred">دائن</span></div>
-            <div class="menu-item" onclick="openPage('شاشات')">📺 <span class="txt-screens">شاشات</span></div>
-            <div class="menu-item" onclick="openPage('طلبات')">🛒 <span class="txt-orders">طلبات</span></div>
-            <div class="menu-item" onclick="openPage('ابل ايدي')" style="grid-column: span 2;">🍎 Apple ID</div>
+    <div id="app-content" class="hidden">
+        <div id="main-menu">
+            <h2 id="m-title" style="text-align:center;">✨ هفال فون ✨</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div class="card" onclick="openSection('مدين')">مدين</div>
+                <div class="card" onclick="openSection('دائن')">دائن</div>
+                <div class="card" onclick="openSection('شاشات')">شاشات</div>
+                <div class="card" onclick="openSection('طلبات')">طلبات</div>
+                <div class="card" onclick="openSection('ابل ايدي')" style="grid-column: span 2;">🍎 Apple ID</div>
+                <div class="card" onclick="openSection('اعدادات')" style="grid-column: span 2; background:#555;">⚙️ الإعدادات</div>
+            </div>
         </div>
-    </div>
 
-    <div id="section-page">
-        <button onclick="goBack()" style="background:none; border:none; color:white; font-size:18px;">⬅ <span class="txt-back">رجوع</span></button>
-        <h2 id="section-title" style="color:var(--gold); text-align:center;"></h2>
-        <div id="fields"></div>
-        <button class="btn-action" onclick="saveData()">+</button>
-        <div id="record-list"></div>
+        <div id="page-section" class="hidden">
+            <button class="btn" style="background:#777" onclick="goBack()">⬅ رجوع</button>
+            <h2 id="section-title"></h2>
+            
+            <div id="settings-area" class="hidden">
+                <input type="text" id="new-user" placeholder="مستخدم جديد">
+                <input type="password" id="new-pass" placeholder="كلمة مرور جديدة">
+                <button class="btn btn-add" onclick="saveSettings()">حفظ</button>
+            </div>
+
+            <div id="data-inputs">
+                <input type="text" id="i-name" placeholder="الاسم">
+                <input type="text" id="i-item" placeholder="المادة">
+                <input type="number" id="i-qty" placeholder="العدد">
+                <input type="number" id="i-price" placeholder="المبلغ">
+                <button class="btn btn-add" onclick="saveRecord()">إضافة سجل</button>
+            </div>
+
+            <div id="apple-area" class="hidden">
+                <input type="text" id="a-name" placeholder="Name">
+                <input type="text" id="a-id" placeholder="Apple ID">
+                <input type="text" id="a-pass" placeholder="Password">
+                <button class="btn btn-add" onclick="generateAppleCard()">إنشاء البطاقة</button>
+                <div id="apple-card"><h3>هفال فون</h3><p>Name: <span id="v-name"></span></p></div>
+                <button class="btn btn-add" onclick="saveAsImage()">📷 صورة</button>
+            </div>
+            <div id="record-list"></div>
+        </div>
     </div>
 </div>
 
 <script>
-    const translations = {
-        'ar': { debt: 'مدين', cred: 'دائن', screens: 'شاشات', orders: 'طلبات', back: 'رجوع' },
-        'ku': { debt: 'قەرزدار', cred: 'قەرزپێدەر', screens: 'شاشە', orders: 'داواکاری', back: 'گەڕانەوە' }
-    };
+    if(!localStorage.getItem('user')) { localStorage.setItem('user', 'admin'); localStorage.setItem('pass', '123'); }
 
     function setLang(lang) {
-        document.getElementById('html-root').setAttribute('dir', lang === 'ku' ? 'rtl' : 'rtl');
-        document.querySelectorAll('.txt-debt').forEach(e => e.innerText = translations[lang].debt);
-        document.querySelectorAll('.txt-cred').forEach(e => e.innerText = translations[lang].cred);
-        document.querySelectorAll('.txt-screens').forEach(e => e.innerText = translations[lang].screens);
-        document.querySelectorAll('.txt-orders').forEach(e => e.innerText = translations[lang].orders);
-        document.querySelectorAll('.txt-back').forEach(e => e.innerText = translations[lang].back);
+        document.getElementById('l-title').innerText = lang === 'ku' ? 'چوونەژوورەوەی هفال فون' : 'دخول هفال فون';
+        document.getElementById('m-title').innerText = lang === 'ku' ? '✨ هفال فون ✨' : '✨ هفال فون ✨';
     }
 
-    // المنطق السابق مع تحديث بسيط
+    function checkLogin() {
+        if(document.getElementById('userInput').value === localStorage.getItem('user') && document.getElementById('passInput').value === localStorage.getItem('pass')) {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app-content').classList.remove('hidden');
+        } else alert('خطأ!');
+    }
+
     let activeType = "";
-    function openPage(type) {
+    function openSection(type) {
         activeType = type;
-        document.getElementById('main-menu').style.display = 'none';
-        document.getElementById('section-page').style.display = 'block';
+        document.getElementById('main-menu').classList.add('hidden');
+        document.getElementById('page-section').classList.remove('hidden');
         document.getElementById('section-title').innerText = type;
-        document.getElementById('fields').innerHTML = `<input type="text" id="i1" placeholder="بيانات...">`;
-    }
-    
-    function goBack() {
-        document.getElementById('main-menu').style.display = 'block';
-        document.getElementById('section-page').style.display = 'none';
+        document.getElementById('settings-area').classList.toggle('hidden', type !== 'اعدادات');
+        document.getElementById('data-inputs').classList.toggle('hidden', (type === 'ابل ايدي' || type === 'اعدادات'));
+        document.getElementById('apple-area').classList.toggle('hidden', type !== 'ابل ايدي');
+        renderRecords();
     }
 
-    function saveData() {
-        let val = document.getElementById('i1').value;
-        let data = JSON.parse(localStorage.getItem(activeType) || "[]");
-        data.push(val);
-        localStorage.setItem(activeType, JSON.stringify(data));
+    function goBack() { document.getElementById('main-menu').classList.remove('hidden'); document.getElementById('page-section').classList.add('hidden'); }
+
+    function saveRecord() {
+        let key = "data_" + activeType;
+        let data = JSON.parse(localStorage.getItem(key) || "[]");
+        data.push({ n: document.getElementById('i-name').value, it: document.getElementById('i-item').value, q: document.getElementById('i-qty').value, p: parseFloat(document.getElementById('i-price').value) || 0 });
+        localStorage.setItem(key, JSON.stringify(data));
         renderRecords();
     }
 
     function renderRecords() {
-        let data = JSON.parse(localStorage.getItem(activeType) || "[]");
-        document.getElementById('record-list').innerHTML = data.map(d => `<div class="card">${d}</div>`).join('');
+        if(activeType === 'ابل ايدي' || activeType === 'اعدادات') return;
+        let key = "data_" + activeType;
+        let data = JSON.parse(localStorage.getItem(key) || "[]");
+        document.getElementById('record-list').innerHTML = data.map((d, i) => `
+            <div class="card">
+                <strong>${d.n}</strong> | ${d.it} | عدد: ${d.q} | مبلغ: ${d.p}
+                <div style="margin-top:5px">
+                    <button class="btn" style="background:#3498db" onclick="updateAmt(${i}, 1)">+</button>
+                    <button class="btn" style="background:#e67e22" onclick="updateAmt(${i}, -1)">-</button>
+                    <button class="btn" style="background:#f1c40f" onclick="editRec(${i})">تعديل</button>
+                    <button class="btn" style="background:#e74c3c" onclick="deleteRec(${i})">حذف</button>
+                    <button class="btn" style="background:#34495e" onclick="printRec('${d.n}', '${d.p}')">طباعة</button>
+                </div>
+            </div>`).join('');
     }
+
+    function updateAmt(i, dir) {
+        let key = "data_" + activeType;
+        let data = JSON.parse(localStorage.getItem(key));
+        let val = parseFloat(prompt("أدخل المبلغ:"));
+        if(val) { dir === 1 ? data[i].p += val : data[i].p -= val; localStorage.setItem(key, JSON.stringify(data)); renderRecords(); }
+    }
+
+    function editRec(i) {
+        let key = "data_" + activeType;
+        let data = JSON.parse(localStorage.getItem(key));
+        let newP = prompt("تعديل المبلغ:", data[i].p);
+        if(newP) { data[i].p = newP; localStorage.setItem(key, JSON.stringify(data)); renderRecords(); }
+    }
+
+    function deleteRec(i) {
+        let key = "data_" + activeType;
+        let data = JSON.parse(localStorage.getItem(key));
+        data.splice(i, 1);
+        localStorage.setItem(key, JSON.stringify(data));
+        renderRecords();
+    }
+
+    function printRec(n, p) {
+        let w = window.open();
+        w.document.write(`<h3>هفال فون</h3><p>الاسم: ${n}</p><p>المبلغ: ${p}</p>`);
+        w.print(); w.close();
+    }
+
+    function toggleTheme() { document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+    function saveSettings() { localStorage.setItem('user', document.getElementById('new-user').value); localStorage.setItem('pass', document.getElementById('new-pass').value); alert('تم!'); }
+    function generateAppleCard() { document.getElementById('v-name').innerText = document.getElementById('a-name').value; document.getElementById('apple-card').style.display = 'block'; }
+    function saveAsImage() { html2canvas(document.getElementById('apple-card')).then(canvas => { let link = document.createElement('a'); link.download = 'AppleID.png'; link.href = canvas.toDataURL(); link.click(); }); }
 </script>
 </body>
 </html>
