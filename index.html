@@ -2,39 +2,45 @@
 <html lang="ar" dir="rtl" id="html-root">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>هفال فون - نظام متكامل</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root { --bg: #f4f4f4; --card: #ffffff; --text: #000; --accent: #2ecc71; }
         [data-theme="dark"] { --bg: #121212; --card: #1e1e1e; --text: #fff; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 10px; transition: 0.3s; }
-        .container { max-width: 400px; margin: auto; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 15px; transition: 0.3s; }
+        .container { max-width: 450px; margin: auto; }
         .hidden { display: none; }
-        .btn { padding: 8px; border-radius: 6px; border: none; cursor: pointer; margin: 2px; font-weight: bold; color: white; }
-        .btn-add { background: var(--accent); width: 100%; padding: 10px; }
-        .card { background: var(--card); padding: 10px; border-radius: 10px; margin-bottom: 8px; border: 1px solid #ccc; font-size: 14px; }
-        input { width: 100%; padding: 8px; margin-bottom: 5px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
-        #apple-card { background: white; color: black; padding: 15px; border-radius: 10px; border: 2px solid #007bff; display: none; }
+        .btn { padding: 12px; border-radius: 8px; border: none; cursor: pointer; margin: 5px 2px; font-weight: bold; color: white; width: 48%; }
+        .btn-add { background: var(--accent); width: 100%; padding: 14px; font-size: 16px; margin-top: 10px; }
+        .card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #ccc; }
+        input { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; }
+        .eye-icon { position: absolute; left: 10px; top: 12px; cursor: pointer; font-size: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <button class="btn" style="background:#555" onclick="toggleTheme()">☀️/🌙</button>
-    <button class="btn" style="background:#333" onclick="setLang('ar')">العربية</button>
-    <button class="btn" style="background:#333" onclick="setLang('ku')">Kurdî</button>
+    <div style="display:flex; justify-content: space-between;">
+        <button class="btn" style="background:#555; width:30%" onclick="toggleTheme()">☀️/🌙</button>
+        <button class="btn" style="background:#333; width:30%" onclick="setLang('ar')">العربية</button>
+        <button class="btn" style="background:#333; width:30%" onclick="setLang('ku')">Kurdî</button>
+    </div>
     
-    <div id="login-screen">
+    <div id="login-screen" class="card">
         <h2 id="l-title">دخول هفال فون</h2>
         <input type="text" id="userInput" placeholder="اسم المستخدم">
-        <input type="password" id="passInput" placeholder="كلمة المرور">
+        <div style="position:relative;">
+            <input type="password" id="passInput" placeholder="كلمة المرور">
+            <span class="eye-icon" onclick="togglePass()">👁️</span>
+        </div>
         <button class="btn btn-add" id="btn-login" onclick="checkLogin()">دخول</button>
     </div>
 
     <div id="app-content" class="hidden">
         <div id="main-menu">
             <h2 id="m-title" style="text-align:center;">هفال فون</h2>
-            <div id="menu-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <div id="menu-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                 <div class="card" onclick="openSection('مدين')">مدين</div>
                 <div class="card" onclick="openSection('دائن')">دائن</div>
                 <div class="card" onclick="openSection('شاشات')">شاشات</div>
@@ -45,7 +51,7 @@
         </div>
 
         <div id="page-section" class="hidden">
-            <button class="btn" style="background:#777" id="btn-back" onclick="goBack()">⬅ رجوع</button>
+            <button class="btn" style="background:#777; width:100%" id="btn-back" onclick="goBack()">⬅ رجوع</button>
             <h2 id="section-title"></h2>
             
             <div id="settings-area" class="hidden">
@@ -72,6 +78,11 @@
         ku: { title: "چوونەژوورەوەی هفال فون", login: "چوونەژوورەوە", menu: "هفال فون", back: "گەڕانەوە", save: "پاشەکەوت", add: "زیادکردنی تۆمار", user: "ناوی بەکارهێنەر", pass: "وشەی نهێنی", mdn: "قەرزدار", dan: "قەرزار", scr: "شاشەکان", req: "داواکارییەکان", sett: "ڕێکخستنەکان" }
     };
 
+    function togglePass() {
+        let p = document.getElementById('passInput');
+        p.type = (p.type === 'password') ? 'text' : 'password';
+    }
+
     function setLang(lang) {
         document.getElementById('html-root').dir = (lang === 'ku') ? 'ltr' : 'rtl';
         document.getElementById('l-title').innerText = langDict[lang].title;
@@ -82,8 +93,6 @@
         document.getElementById('btn-add-rec').innerText = langDict[lang].add;
         document.getElementById('userInput').placeholder = langDict[lang].user;
         document.getElementById('passInput').placeholder = langDict[lang].pass;
-        
-        // تحديث أسماء الأقسام في القائمة
         const cards = document.querySelectorAll('#menu-grid .card');
         cards[0].innerText = langDict[lang].mdn;
         cards[1].innerText = langDict[lang].dan;
@@ -92,7 +101,7 @@
         cards[5].innerText = "⚙️ " + langDict[lang].sett;
     }
 
-    // بقية كودك الأصلي كما هو...
+    // بقية الوظائف الأساسية
     if(!localStorage.getItem('user')) { localStorage.setItem('user', 'admin'); localStorage.setItem('pass', '123'); }
     function checkLogin() { if(document.getElementById('userInput').value === localStorage.getItem('user') && document.getElementById('passInput').value === localStorage.getItem('pass')) { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('app-content').classList.remove('hidden'); } else alert('خطأ!'); }
     function openSection(type) { activeType = type; document.getElementById('main-menu').classList.add('hidden'); document.getElementById('page-section').classList.remove('hidden'); document.getElementById('section-title').innerText = type; document.getElementById('settings-area').classList.toggle('hidden', type !== 'اعدادات'); document.getElementById('data-inputs').classList.toggle('hidden', (type === 'ابل ايدي' || type === 'اعدادات')); renderRecords(); }
