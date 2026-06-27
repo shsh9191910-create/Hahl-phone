@@ -87,7 +87,7 @@
     let activeType = ""; let activeSub = "";
     const langDict = { 
         ar: { title: "دخول هفال فون", login: "دخول", menu: "هفال فون", back: "رجوع", save: "حفظ", add: "إضافة سجل", user: "اسم المستخدم", pass: "كلمة المرور", mdn: "مدين", dan: "دائن", mat: "مواد", req: "طلبات", sett: "الإعدادات", arch: "الأرشيف", srch: "🔍 بحث..." }, 
-        ku: { title: "چوونەژوورەوەی هفال فون", login: "چوونەژوورەوە", menu: "هفال فون", back: "گەڕانەوە", save: "پاشەکەوت", add: "زیادکردنی تۆمار", user: "ناوی بەکارهێنەر", pass: "وشەی نهێنی", mdn: "قەرزدار", dan: "قەرزار", mat: "مواد", req: "داواکارییەکان", sett: "ڕێکخستنەکان", arch: "ئەرشیف", srch: "🔍 گەڕان..." } 
+        ku: { title: "چوونەژوورەوەی هفال فون", login: "چوونەژوورەوە", menu: "هفال فون", back: "گەڕانەوە", save: "پاشەکەوت", add: "زیادکردنی تۆمار", user: "ناوی بەکارهێنەر", pass: "وشەی نهێنی", mdn: "قەرزدار", dan: "قەرزار", mat: "مواد", req: "داواکارییەکان", sett: "ڕێکخستنەکان", arch: "أەرشیف", srch: "🔍 گەڕان..." } 
     };
 
     function setLang(lang) { 
@@ -157,10 +157,21 @@
 
     function hardDelete(i) { let d = JSON.parse(localStorage.getItem('archive_data')); d.splice(i, 1); localStorage.setItem('archive_data', JSON.stringify(d)); renderRecords(); }
     function goBack() { document.getElementById('main-menu').classList.remove('hidden'); document.getElementById('page-section').classList.add('hidden'); }
-    function checkLogin() { if(document.getElementById('userInput').value === (localStorage.getItem('user')||'admin') && document.getElementById('passInput').value === (localStorage.getItem('pass')||'ج123')) { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('app-content').classList.remove('hidden'); } else alert('خطأ!'); }
+    
+    // تم التعديل هنا: استخدام haval و 2026
+    function checkLogin() { 
+        if(document.getElementById('userInput').value === (localStorage.getItem('user') || 'haval') && 
+           document.getElementById('passInput').value === (localStorage.getItem('pass') || '2026')) { 
+            document.getElementById('login-screen').classList.add('hidden'); 
+            document.getElementById('app-content').classList.remove('hidden'); 
+        } else { 
+            alert('اسم المستخدم أو كلمة المرور غير صحيحة!'); 
+        } 
+    }
+    
     function togglePass() { let p = document.getElementById('passInput'); p.type = (p.type === 'password') ? 'text' : 'password'; }
     function toggleTheme() { document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
-    function saveSettings() { localStorage.setItem('user', document.getElementById('new-user').value); localStorage.setItem('pass', document.getElementById('new-pass').value); alert('تم!'); }
+    function saveSettings() { localStorage.setItem('user', document.getElementById('new-user').value); localStorage.setItem('pass', document.getElementById('new-pass').value); alert('تم حفظ الإعدادات الجديدة!'); }
 </script>
 </body>
 </html>
