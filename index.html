@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" id="html-root">
+<html lang="ku" dir="rtl" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>هفال فون - نظام متكامل</title>
+    <title>هفال فون - Haval Phone</title>
     <style>
         :root { --bg: #f4f4f4; --card: #ffffff; --text: #000; --accent: #2ecc71; }
         [data-theme="dark"] { --bg: #121212; --card: #1e1e1e; --text: #fff; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 15px; transition: 0.3s; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 15px; transition: 0.3s; }
         .container { max-width: 450px; margin: auto; }
         .hidden { display: none !important; }
-        .btn { padding: 12px; border-radius: 8px; border: none; cursor: pointer; margin: 5px 2px; font-weight: bold; color: white; width: 48%; }
+        .btn { padding: 12px; border-radius: 8px; border: none; cursor: pointer; margin: 5px 2px; font-weight: bold; color: white; }
         .btn-add { background: var(--accent); width: 100%; padding: 14px; font-size: 16px; margin-top: 10px; }
         .card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #ccc; }
-        input { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; }
+        input, select { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; }
         .eye-icon { position: absolute; left: 10px; top: 12px; cursor: pointer; font-size: 20px; }
         .sub-menu { display: flex; gap: 5px; margin-bottom: 10px; }
         .sub-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; background: #3498db; color: white; cursor: pointer; }
@@ -25,58 +25,70 @@
 
 <div class="container">
     <div style="display:flex; justify-content: space-between;">
-        <button class="btn" style="background:#555; width:30%" onclick="toggleTheme()">☀️/🌙</button>
-        <button class="btn" style="background:#333; width:30%" onclick="setLang('ar')">العربية</button>
-        <button class="btn" style="background:#333; width:30%" onclick="setLang('ku')">Kurdî</button>
+        <button class="btn" style="background:#555; flex:1" onclick="toggleTheme()">☀️/🌙</button>
+        <button class="btn" style="background:#333; flex:1" onclick="setLang('ar')">العربية</button>
+        <button class="btn" style="background:#333; flex:1" onclick="setLang('ku')">Kurdî</button>
     </div>
     
     <div id="login-screen" class="card">
-        <h2 id="l-title">دخول هفال فون</h2>
-        <input type="text" id="userInput" placeholder="اسم المستخدم">
+        <h2 id="l-title">چوونەژوورەوە - هفال فون</h2>
+        <input type="text" id="userInput" placeholder="ناوی بەکارهێنەر">
         <div style="position:relative;">
-            <input type="password" id="passInput" placeholder="كلمة المرور">
+            <input type="password" id="passInput" placeholder="وشەی نهێنی">
             <span class="eye-icon" onclick="togglePass()">👁️</span>
         </div>
-        <button class="btn btn-add" id="btn-login" onclick="checkLogin()">دخول</button>
+        <button class="btn btn-add" id="btn-login" onclick="checkLogin()">چوونەژوورەوە</button>
     </div>
 
     <div id="app-content" class="hidden">
         <div id="main-menu">
             <h2 id="m-title" style="text-align:center;">هفال فون</h2>
             <div id="menu-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <div class="card" onclick="openSection('مدين')">مدين</div>
-                <div class="card" onclick="openSection('دائن')">دائن</div>
+                <div class="card" onclick="openSection('مدين')">قەرزدار</div>
+                <div class="card" onclick="openSection('دائن')">قەرزار</div>
                 <div class="card" onclick="openSection('مواد')">مواد</div>
-                <div class="card" onclick="openSection('طلبات')">طلبات</div>
+                <div class="card" onclick="openSection('طلبات')">داواکارییەکان</div>
                 <div class="card" onclick="openSection('ابل ايدي')" style="grid-column: span 2;">🍎 Apple ID</div>
-                <div class="card" onclick="openSection('أرشيف')" style="background:#e67e22; color:white;">🗑️ الأرشيف</div>
-                <div class="card" onclick="openSection('اعدادات')" style="background:#555; color:white;">⚙️ الإعدادات</div>
+                <div class="card" onclick="openSection('أرشيف')" style="background:#e67e22; color:white;">🗑️ ئەرشیف</div>
+                <div class="card" onclick="openSection('اعدادات')" style="background:#555; color:white;">⚙️ ڕێکخستن</div>
             </div>
         </div>
 
         <div id="page-section" class="hidden">
-            <button class="btn" style="background:#777; width:100%" id="btn-back" onclick="goBack()">⬅ رجوع</button>
+            <button class="btn" style="background:#777; width:100%" id="btn-back" onclick="goBack()">⬅ گەڕانەوە</button>
             <h2 id="section-title"></h2>
-            <input type="text" id="search-input" placeholder="🔍 بحث..." onkeyup="renderRecords()">
+            <input type="text" id="search-input" placeholder="🔍 گەڕان..." onkeyup="renderRecords()">
 
             <div id="material-sub" class="sub-menu hidden">
-                <button class="sub-btn" onclick="setSub('بطارية 🪫')">بطارية 🪫</button>
-                <button class="sub-btn" onclick="setSub('شاشة 📺')">شاشة 📺</button>
-                <button class="sub-btn" onclick="setSub('لمس')">لمس 👆</button>
+                <button class="sub-btn" onclick="setSub('پاتری 🪫')">پاتری 🪫</button>
+                <button class="sub-btn" onclick="setSub('شاشە 📺')">شاشە 📺</button>
+                <button class="sub-btn" onclick="setSub('تەچ')">تەچ 👆</button>
             </div>
 
             <div id="settings-area" class="hidden">
-                <input type="text" id="new-user" placeholder="مستخدم جديد">
-                <input type="password" id="new-pass" placeholder="كلمة مرور جديدة">
-                <button class="btn btn-add" id="btn-save" onclick="saveSettings()">حفظ</button>
+                <input type="text" id="new-user" placeholder="ناوی بەکارهێنەری نوێ">
+                <input type="password" id="new-pass" placeholder="وشەی نهێنی نوێ">
+                <button class="btn btn-add" id="btn-save" onclick="saveSettings()">پاشەکەوت</button>
             </div>
 
             <div id="data-inputs">
-                <input type="text" id="i-name" placeholder="الاسم">
-                <input type="text" id="i-item" placeholder="المادة">
-                <input type="number" id="i-qty" placeholder="العدد">
-                <input type="number" id="i-price" placeholder="المبلغ">
-                <button class="btn btn-add" id="btn-add-rec" onclick="saveRecord()">إضافة سجل</button>
+                <div id="material-extra-fields" class="hidden">
+                    <select id="i-device">
+                        <option value="Infinix">Infinix</option>
+                        <option value="Itel">Itel</option>
+                        <option value="Samsung">Samsung</option>
+                        <option value="iPhone">iPhone</option>
+                        <option value="Huawei">Huawei</option>
+                        <option value="Tecno">Tecno</option>
+                    </select>
+                    <input type="number" id="i-single" placeholder="نرخی تاک">
+                    <input type="number" id="i-wholesale" placeholder="نرخی کۆ">
+                </div>
+                <input type="text" id="i-name" placeholder="ناو">
+                <input type="text" id="i-item" placeholder="مادە">
+                <input type="number" id="i-qty" placeholder="ژمارە">
+                <input type="number" id="i-price" placeholder="بڕی پارە">
+                <button class="btn btn-add" id="btn-add-rec" onclick="saveRecord()">زیادکردنی تۆمار</button>
             </div>
             <div id="record-list"></div>
         </div>
@@ -86,29 +98,45 @@
 <script>
     let activeType = ""; let activeSub = "";
     const langDict = { 
-        ar: { title: "دخول هفال فون", login: "دخول", menu: "هفال فون", back: "رجوع", save: "حفظ", add: "إضافة سجل", user: "اسم المستخدم", pass: "كلمة المرور", mdn: "مدين", dan: "دائن", mat: "مواد", req: "طلبات", sett: "الإعدادات", arch: "الأرشيف", srch: "🔍 بحث..." }, 
-        ku: { title: "چوونەژوورەوەی هفال فون", login: "چوونەژوورەوە", menu: "هفال فون", back: "گەڕانەوە", save: "پاشەکەوت", add: "زیادکردنی تۆمار", user: "ناوی بەکارهێنەر", pass: "وشەی نهێنی", mdn: "قەرزدار", dan: "قەرزار", mat: "مواد", req: "داواکارییەکان", sett: "ڕێکخستنەکان", arch: "أەرشیف", srch: "🔍 گەڕان..." } 
+        ar: { title: "چوونەژوورەوە - هفال فون", login: "چوونەژوورەوە", menu: "هفال فون", back: "گەڕانەوە", save: "پاشەکەوت", add: "زیادکردنی تۆمار", mdn: "قەرزدار", dan: "قەرزار", mat: "مواد", req: "داواکارییەکان", sett: "ڕێکخستن", arch: "ئەرشیف", srch: "🔍 گەڕان..." }, 
+        ku: { title: "چوونەژوورەوە - هفال فون", login: "چوونەژوورەوە", menu: "هفال فون", back: "گەڕانەوە", save: "پاشەکەوت", add: "زیادکردنی تۆمار", mdn: "قەرزدار", dan: "قەرزار", mat: "مواد", req: "داواکارییەکان", sett: "ڕێکخستن", arch: "ئەرشیف", srch: "🔍 گەڕان..." } 
     };
 
     function setLang(lang) { 
-        document.getElementById('html-root').dir = (lang === 'ku') ? 'ltr' : 'rtl'; 
-        document.getElementById('l-title').innerText = langDict[lang].title; 
-        document.getElementById('btn-login').innerText = langDict[lang].login; 
-        document.getElementById('m-title').innerText = langDict[lang].menu; 
-        document.getElementById('btn-back').innerText = langDict[lang].back; 
-        document.getElementById('btn-save').innerText = langDict[lang].save; 
-        document.getElementById('btn-add-rec').innerText = langDict[lang].add; 
+        document.getElementById('html-root').dir = (lang === 'ku') ? 'rtl' : 'rtl'; 
+        // يمكن إضافة المزيد من الترجمة الديناميكية هنا
     }
 
-    function openSection(type) { activeType = type; activeSub = ""; document.getElementById('main-menu').classList.add('hidden'); document.getElementById('page-section').classList.remove('hidden'); document.getElementById('section-title').innerText = type; document.getElementById('material-sub').classList.toggle('hidden', type !== 'مواد'); document.getElementById('settings-area').classList.toggle('hidden', type !== 'اعدادات'); document.getElementById('data-inputs').classList.toggle('hidden', (type === 'ابل ايدي' || type === 'اعدادات' || type === 'مواد' || type === 'أرشيف')); renderRecords(); }
+    function openSection(type) { 
+        activeType = type; activeSub = ""; 
+        document.getElementById('main-menu').classList.add('hidden'); 
+        document.getElementById('page-section').classList.remove('hidden'); 
+        document.getElementById('section-title').innerText = type; 
+        document.getElementById('material-sub').classList.toggle('hidden', type !== 'مواد'); 
+        document.getElementById('settings-area').classList.toggle('hidden', type !== 'اعدادات'); 
+        document.getElementById('material-extra-fields').classList.add('hidden');
+        document.getElementById('data-inputs').classList.toggle('hidden', (type === 'ابل ايدي' || type === 'اعدادات' || type === 'مواد' || type === 'أرشيف')); 
+        renderRecords(); 
+    }
     
-    function setSub(sub) { activeSub = sub; document.getElementById('section-title').innerText = "مواد > " + sub; document.getElementById('data-inputs').classList.remove('hidden'); document.getElementById('i-item').classList.add('hidden'); document.getElementById('i-price').classList.add('hidden'); renderRecords(); }
+    function setSub(sub) { 
+        activeSub = sub; 
+        document.getElementById('section-title').innerText = "مواد > " + sub; 
+        document.getElementById('data-inputs').classList.remove('hidden'); 
+        document.getElementById('material-extra-fields').classList.remove('hidden');
+        document.getElementById('i-item').classList.add('hidden'); 
+        document.getElementById('i-price').classList.add('hidden'); 
+        renderRecords(); 
+    }
 
     function saveRecord() {
         let key = activeType === 'مواد' ? ("data_" + activeType + "_" + activeSub) : ("data_" + activeType);
         let data = JSON.parse(localStorage.getItem(key) || "[]");
-        if(activeType === 'مواد') data.push({ n: document.getElementById('i-name').value, q: document.getElementById('i-qty').value });
-        else data.push({ n: document.getElementById('i-name').value, it: document.getElementById('i-item').value, q: document.getElementById('i-qty').value, p: parseFloat(document.getElementById('i-price').value) || 0 });
+        if(activeType === 'مواد') {
+            data.push({ n: document.getElementById('i-name').value, q: document.getElementById('i-qty').value, dev: document.getElementById('i-device').value, single: document.getElementById('i-single').value, whole: document.getElementById('i-wholesale').value });
+        } else {
+            data.push({ n: document.getElementById('i-name').value, it: document.getElementById('i-item').value, q: document.getElementById('i-qty').value, p: document.getElementById('i-price').value });
+        }
         localStorage.setItem(key, JSON.stringify(data)); renderRecords();
     }
 
@@ -117,29 +145,18 @@
         let data = JSON.parse(localStorage.getItem(key) || "[]");
         document.getElementById('record-list').innerHTML = data.map((d, i) => `
             <div class="card">
-                <strong>${d.n}</strong> ${d.it ? '| ' + d.it : ''} ${d.p ? '| ' + d.p : ''} | العدد: ${d.q}
+                <strong>${d.n}</strong> ${d.it ? '| ' + d.it : ''} ${d.p ? '| ' + d.p : ''} ${d.dev ? '<br>ئامێر: ' + d.dev : ''} ${d.single ? '<br>تاک: ' + d.single + ' | کۆ: ' + d.whole : ''} | ژمارە: ${d.q}
                 <div class="action-btns">
-                    ${activeType !== 'أرشيف' ? `<button onclick="deleteRec(${i})" style="background:#e67e22;">📥 أرشفة</button>` : ''}
-                    ${activeType !== 'أرشيف' && activeType !== 'مواد' ? `<button onclick="payDebt(${i})" style="background:#9b59b6;">💰 تسديد</button>` : ''}
-                    <button onclick="printRecord('${d.n}', '${d.it || ''}', '${d.q}', '${d.p || 0}')" style="background:#3498db;">🖨️ طباعة</button>
-                    <button onclick="${activeType === 'أرشيف' ? 'hardDelete('+i+')' : 'deleteRec('+i+')'}" style="background:#e74c3c;">🗑️ حذف</button>
+                    ${activeType !== 'أرشيف' ? `<button onclick="deleteRec(${i})" style="background:#e67e22;">📥 ئەرشیف</button>` : ''}
+                    <button onclick="printRecord('${d.n}', '${d.it || ''}', '${d.q}', '${d.p || 0}')" style="background:#3498db;">🖨️ چاپ</button>
+                    <button onclick="${activeType === 'أرشيف' ? 'hardDelete('+i+')' : 'deleteRec('+i+')'}" style="background:#e74c3c;">🗑️ سڕینەوە</button>
                 </div>
             </div>`).join('');
     }
 
-    function payDebt(i) {
-        let amount = prompt("أدخل مبلغ التسديد:");
-        if(amount) {
-            let key = "data_" + activeType;
-            let data = JSON.parse(localStorage.getItem(key));
-            data[i].p = parseFloat(data[i].p || 0) - parseFloat(amount);
-            localStorage.setItem(key, JSON.stringify(data)); renderRecords();
-        }
-    }
-
     function printRecord(n, it, q, p) {
         let win = window.open('', '_blank');
-        win.document.write(`<html><body dir="rtl" style="text-align:center; font-family:sans-serif;"><h3>وصل هفال فون</h3><hr><p>الاسم: ${n}</p><p>المادة: ${it}</p><p>العدد: ${q}</p><p>المبلغ: ${p}</p></body></html>`);
+        win.document.write(`<html><body dir="rtl" style="text-align:center; font-family:sans-serif;"><h3>هفال فون</h3><hr><p>ناو: ${n}</p><p>مادە: ${it}</p><p>ژمارە: ${q}</p><p>بڕ: ${p}</p></body></html>`);
         win.print();
     }
 
@@ -157,21 +174,16 @@
 
     function hardDelete(i) { let d = JSON.parse(localStorage.getItem('archive_data')); d.splice(i, 1); localStorage.setItem('archive_data', JSON.stringify(d)); renderRecords(); }
     function goBack() { document.getElementById('main-menu').classList.remove('hidden'); document.getElementById('page-section').classList.add('hidden'); }
-    
-    // تم التعديل هنا: استخدام haval و 2026
     function checkLogin() { 
         if(document.getElementById('userInput').value === (localStorage.getItem('user') || 'haval') && 
            document.getElementById('passInput').value === (localStorage.getItem('pass') || '2026')) { 
             document.getElementById('login-screen').classList.add('hidden'); 
             document.getElementById('app-content').classList.remove('hidden'); 
-        } else { 
-            alert('اسم المستخدم أو كلمة المرور غير صحيحة!'); 
-        } 
+        } else { alert('ناوی بەکارهێنەر یان وشەی نهێنی هەڵەیە!'); } 
     }
-    
     function togglePass() { let p = document.getElementById('passInput'); p.type = (p.type === 'password') ? 'text' : 'password'; }
     function toggleTheme() { document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
-    function saveSettings() { localStorage.setItem('user', document.getElementById('new-user').value); localStorage.setItem('pass', document.getElementById('new-pass').value); alert('تم حفظ الإعدادات الجديدة!'); }
+    function saveSettings() { localStorage.setItem('user', document.getElementById('new-user').value); localStorage.setItem('pass', document.getElementById('new-pass').value); alert('سەرکەوتوو بوو!'); }
 </script>
 </body>
 </html>
