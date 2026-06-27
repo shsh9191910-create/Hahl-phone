@@ -4,18 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>هفال فون - نظام متكامل</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root { --bg: #f4f4f4; --card: #ffffff; --text: #000; --accent: #2ecc71; }
         [data-theme="dark"] { --bg: #121212; --card: #1e1e1e; --text: #fff; }
         body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 15px; transition: 0.3s; }
         .container { max-width: 450px; margin: auto; }
-        .hidden { display: none; }
+        .hidden { display: none !important; }
         .btn { padding: 12px; border-radius: 8px; border: none; cursor: pointer; margin: 5px 2px; font-weight: bold; color: white; width: 48%; }
         .btn-add { background: var(--accent); width: 100%; padding: 14px; font-size: 16px; margin-top: 10px; }
         .card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #ccc; }
         input { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; }
         .eye-icon { position: absolute; left: 10px; top: 12px; cursor: pointer; font-size: 20px; }
+        .sub-menu { display: flex; gap: 5px; margin-bottom: 10px; }
+        .sub-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; background: #3498db; color: white; cursor: pointer; }
+        .action-btns { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+        .action-btns button { padding: 5px 8px; cursor: pointer; border-radius: 4px; border: none; font-size: 11px; color: white; }
     </style>
 </head>
 <body>
@@ -43,17 +46,25 @@
             <div id="menu-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                 <div class="card" onclick="openSection('مدين')">مدين</div>
                 <div class="card" onclick="openSection('دائن')">دائن</div>
-                <div class="card" onclick="openSection('شاشات')">شاشات</div>
+                <div class="card" onclick="openSection('مواد')">مواد</div>
                 <div class="card" onclick="openSection('طلبات')">طلبات</div>
                 <div class="card" onclick="openSection('ابل ايدي')" style="grid-column: span 2;">🍎 Apple ID</div>
-                <div class="card" onclick="openSection('اعدادات')" style="grid-column: span 2; background:#555;">⚙️ الإعدادات</div>
+                <div class="card" onclick="openSection('أرشيف')" style="background:#e67e22; color:white;">🗑️ الأرشيف</div>
+                <div class="card" onclick="openSection('اعدادات')" style="background:#555; color:white;">⚙️ الإعدادات</div>
             </div>
         </div>
 
         <div id="page-section" class="hidden">
             <button class="btn" style="background:#777; width:100%" id="btn-back" onclick="goBack()">⬅ رجوع</button>
             <h2 id="section-title"></h2>
-            
+            <input type="text" id="search-input" placeholder="🔍 بحث..." onkeyup="renderRecords()">
+
+            <div id="material-sub" class="sub-menu hidden">
+                <button class="sub-btn" onclick="setSub('بطارية 🪫')">بطارية 🪫</button>
+                <button class="sub-btn" onclick="setSub('شاشة 📺')">شاشة 📺</button>
+                <button class="sub-btn" onclick="setSub('لمس')">لمس 👆</button>
+            </div>
+
             <div id="settings-area" class="hidden">
                 <input type="text" id="new-user" placeholder="مستخدم جديد">
                 <input type="password" id="new-pass" placeholder="كلمة مرور جديدة">
@@ -73,42 +84,81 @@
 </div>
 
 <script>
-    const langDict = {
-        ar: { title: "دخول هفال فون", login: "دخول", menu: "هفال فون", back: "رجوع", save: "حفظ", add: "إضافة سجل", user: "اسم المستخدم", pass: "كلمة المرور", mdn: "مدين", dan: "دائن", scr: "شاشات", req: "طلبات", sett: "الإعدادات" },
-        ku: { title: "چوونەژوورەوەی هفال فون", login: "چوونەژوورەوە", menu: "هفال فون", back: "گەڕانەوە", save: "پاشەکەوت", add: "زیادکردنی تۆمار", user: "ناوی بەکارهێنەر", pass: "وشەی نهێنی", mdn: "قەرزدار", dan: "قەرزار", scr: "شاشەکان", req: "داواکارییەکان", sett: "ڕێکخستنەکان" }
+    let activeType = ""; let activeSub = "";
+    const langDict = { 
+        ar: { title: "دخول هفال فون", login: "دخول", menu: "هفال فون", back: "رجوع", save: "حفظ", add: "إضافة سجل", user: "اسم المستخدم", pass: "كلمة المرور", mdn: "مدين", dan: "دائن", mat: "مواد", req: "طلبات", sett: "الإعدادات", arch: "الأرشيف", srch: "🔍 بحث..." }, 
+        ku: { title: "چوونەژوورەوەی هفال فون", login: "چوونەژوورەوە", menu: "هفال فون", back: "گەڕانەوە", save: "پاشەکەوت", add: "زیادکردنی تۆمار", user: "ناوی بەکارهێنەر", pass: "وشەی نهێنی", mdn: "قەرزدار", dan: "قەرزار", mat: "مواد", req: "داواکارییەکان", sett: "ڕێکخستنەکان", arch: "ئەرشیف", srch: "🔍 گەڕان..." } 
     };
 
-    function togglePass() {
-        let p = document.getElementById('passInput');
-        p.type = (p.type === 'password') ? 'text' : 'password';
+    function setLang(lang) { 
+        document.getElementById('html-root').dir = (lang === 'ku') ? 'ltr' : 'rtl'; 
+        document.getElementById('l-title').innerText = langDict[lang].title; 
+        document.getElementById('btn-login').innerText = langDict[lang].login; 
+        document.getElementById('m-title').innerText = langDict[lang].menu; 
+        document.getElementById('btn-back').innerText = langDict[lang].back; 
+        document.getElementById('btn-save').innerText = langDict[lang].save; 
+        document.getElementById('btn-add-rec').innerText = langDict[lang].add; 
     }
 
-    function setLang(lang) {
-        document.getElementById('html-root').dir = (lang === 'ku') ? 'ltr' : 'rtl';
-        document.getElementById('l-title').innerText = langDict[lang].title;
-        document.getElementById('btn-login').innerText = langDict[lang].login;
-        document.getElementById('m-title').innerText = langDict[lang].menu;
-        document.getElementById('btn-back').innerText = langDict[lang].back;
-        document.getElementById('btn-save').innerText = langDict[lang].save;
-        document.getElementById('btn-add-rec').innerText = langDict[lang].add;
-        document.getElementById('userInput').placeholder = langDict[lang].user;
-        document.getElementById('passInput').placeholder = langDict[lang].pass;
-        const cards = document.querySelectorAll('#menu-grid .card');
-        cards[0].innerText = langDict[lang].mdn;
-        cards[1].innerText = langDict[lang].dan;
-        cards[2].innerText = langDict[lang].scr;
-        cards[3].innerText = langDict[lang].req;
-        cards[5].innerText = "⚙️ " + langDict[lang].sett;
+    function openSection(type) { activeType = type; activeSub = ""; document.getElementById('main-menu').classList.add('hidden'); document.getElementById('page-section').classList.remove('hidden'); document.getElementById('section-title').innerText = type; document.getElementById('material-sub').classList.toggle('hidden', type !== 'مواد'); document.getElementById('settings-area').classList.toggle('hidden', type !== 'اعدادات'); document.getElementById('data-inputs').classList.toggle('hidden', (type === 'ابل ايدي' || type === 'اعدادات' || type === 'مواد' || type === 'أرشيف')); renderRecords(); }
+    
+    function setSub(sub) { activeSub = sub; document.getElementById('section-title').innerText = "مواد > " + sub; document.getElementById('data-inputs').classList.remove('hidden'); document.getElementById('i-item').classList.add('hidden'); document.getElementById('i-price').classList.add('hidden'); renderRecords(); }
+
+    function saveRecord() {
+        let key = activeType === 'مواد' ? ("data_" + activeType + "_" + activeSub) : ("data_" + activeType);
+        let data = JSON.parse(localStorage.getItem(key) || "[]");
+        if(activeType === 'مواد') data.push({ n: document.getElementById('i-name').value, q: document.getElementById('i-qty').value });
+        else data.push({ n: document.getElementById('i-name').value, it: document.getElementById('i-item').value, q: document.getElementById('i-qty').value, p: parseFloat(document.getElementById('i-price').value) || 0 });
+        localStorage.setItem(key, JSON.stringify(data)); renderRecords();
     }
 
-    // بقية الوظائف الأساسية
-    if(!localStorage.getItem('user')) { localStorage.setItem('user', 'admin'); localStorage.setItem('pass', '123'); }
-    function checkLogin() { if(document.getElementById('userInput').value === localStorage.getItem('user') && document.getElementById('passInput').value === localStorage.getItem('pass')) { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('app-content').classList.remove('hidden'); } else alert('خطأ!'); }
-    function openSection(type) { activeType = type; document.getElementById('main-menu').classList.add('hidden'); document.getElementById('page-section').classList.remove('hidden'); document.getElementById('section-title').innerText = type; document.getElementById('settings-area').classList.toggle('hidden', type !== 'اعدادات'); document.getElementById('data-inputs').classList.toggle('hidden', (type === 'ابل ايدي' || type === 'اعدادات')); renderRecords(); }
+    function renderRecords() {
+        let key = (activeType === 'أرشيف') ? 'archive_data' : (activeType === 'مواد' ? ("data_" + activeType + "_" + activeSub) : ("data_" + activeType));
+        let data = JSON.parse(localStorage.getItem(key) || "[]");
+        document.getElementById('record-list').innerHTML = data.map((d, i) => `
+            <div class="card">
+                <strong>${d.n}</strong> ${d.it ? '| ' + d.it : ''} ${d.p ? '| ' + d.p : ''} | العدد: ${d.q}
+                <div class="action-btns">
+                    ${activeType !== 'أرشيف' ? `<button onclick="deleteRec(${i})" style="background:#e67e22;">📥 أرشفة</button>` : ''}
+                    ${activeType !== 'أرشيف' && activeType !== 'مواد' ? `<button onclick="payDebt(${i})" style="background:#9b59b6;">💰 تسديد</button>` : ''}
+                    <button onclick="printRecord('${d.n}', '${d.it || ''}', '${d.q}', '${d.p || 0}')" style="background:#3498db;">🖨️ طباعة</button>
+                    <button onclick="${activeType === 'أرشيف' ? 'hardDelete('+i+')' : 'deleteRec('+i+')'}" style="background:#e74c3c;">🗑️ حذف</button>
+                </div>
+            </div>`).join('');
+    }
+
+    function payDebt(i) {
+        let amount = prompt("أدخل مبلغ التسديد:");
+        if(amount) {
+            let key = "data_" + activeType;
+            let data = JSON.parse(localStorage.getItem(key));
+            data[i].p = parseFloat(data[i].p || 0) - parseFloat(amount);
+            localStorage.setItem(key, JSON.stringify(data)); renderRecords();
+        }
+    }
+
+    function printRecord(n, it, q, p) {
+        let win = window.open('', '_blank');
+        win.document.write(`<html><body dir="rtl" style="text-align:center; font-family:sans-serif;"><h3>وصل هفال فون</h3><hr><p>الاسم: ${n}</p><p>المادة: ${it}</p><p>العدد: ${q}</p><p>المبلغ: ${p}</p></body></html>`);
+        win.print();
+    }
+
+    function deleteRec(i) {
+        let key = activeType === 'مواد' ? ("data_" + activeType + "_" + activeSub) : ("data_" + activeType);
+        let data = JSON.parse(localStorage.getItem(key));
+        if(activeType !== 'أرشيف') {
+            let archive = JSON.parse(localStorage.getItem('archive_data') || "[]");
+            archive.push(data[i]);
+            localStorage.setItem('archive_data', JSON.stringify(archive));
+        }
+        data.splice(i, 1);
+        localStorage.setItem(key, JSON.stringify(data)); renderRecords();
+    }
+
+    function hardDelete(i) { let d = JSON.parse(localStorage.getItem('archive_data')); d.splice(i, 1); localStorage.setItem('archive_data', JSON.stringify(d)); renderRecords(); }
     function goBack() { document.getElementById('main-menu').classList.remove('hidden'); document.getElementById('page-section').classList.add('hidden'); }
-    function saveRecord() { let key = "data_" + activeType; let data = JSON.parse(localStorage.getItem(key) || "[]"); data.push({ n: document.getElementById('i-name').value, it: document.getElementById('i-item').value, q: document.getElementById('i-qty').value, p: parseFloat(document.getElementById('i-price').value) || 0 }); localStorage.setItem(key, JSON.stringify(data)); renderRecords(); }
-    function renderRecords() { let key = "data_" + activeType; let data = JSON.parse(localStorage.getItem(key) || "[]"); document.getElementById('record-list').innerHTML = data.map((d, i) => `<div class="card"><strong>${d.n}</strong> | ${d.it} | ${d.p} <button onclick="deleteRec(${i})">🗑️</button></div>`).join(''); }
-    function deleteRec(i) { let key = "data_" + activeType; let data = JSON.parse(localStorage.getItem(key)); data.splice(i, 1); localStorage.setItem(key, JSON.stringify(data)); renderRecords(); }
+    function checkLogin() { if(document.getElementById('userInput').value === (localStorage.getItem('user')||'admin') && document.getElementById('passInput').value === (localStorage.getItem('pass')||'ج123')) { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('app-content').classList.remove('hidden'); } else alert('خطأ!'); }
+    function togglePass() { let p = document.getElementById('passInput'); p.type = (p.type === 'password') ? 'text' : 'password'; }
     function toggleTheme() { document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
     function saveSettings() { localStorage.setItem('user', document.getElementById('new-user').value); localStorage.setItem('pass', document.getElementById('new-pass').value); alert('تم!'); }
 </script>
